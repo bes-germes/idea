@@ -459,11 +459,11 @@
                                             <div class="container-lg">
 
                                                 <?php if ($user != '') {
-                                                    $result_ban_author = pg_query('SELECT count(locked) FROM inc_user WHERE  locked = true and id=' . $au->getUserId($_SESSION['hash'])) or die('Ошибка запроса: ' . pg_last_error());
+                                                    $result_ban_author = pg_query($db, 'SELECT locked FROM inc_user WHERE  id=' . $au->getUserId($_SESSION['hash'])) or die('Ошибка запроса: ' . pg_last_error());
 
                                                     $ban_author = pg_fetch_array($result_ban_author, null, PGSQL_ASSOC);
-
-                                                    if ($ban_author['count'] == 0) {
+													
+                                                    if ($ban_author['locked'] != 't') {
                                                 ?>
                                                         <div class="input-group" id="input-group<?= $curId ?>">
 
