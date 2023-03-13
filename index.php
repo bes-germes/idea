@@ -374,9 +374,9 @@
 
                                                 $author = pg_fetch_array($result_author, null, PGSQL_ASSOC);
                                                 $result_ban_author = pg_query('SELECT count(locked) FROM inc_user WHERE  locked = true and id=' . $comment['author_id']) or die('Ошибка запроса: ' . pg_last_error());
-     
+
                                                 $ban_author = pg_fetch_array($result_ban_author, null, PGSQL_ASSOC);
-                                                
+
                                                 if ($ban_author['count'] == 0) {
                                             ?>
                                                     <div class="comment_body" id="comment_body<?= $comment['id'] ?>">
@@ -458,56 +458,73 @@
                                         <div class="comment_push mb-3">
                                             <div class="container-lg">
 
-                                                <?php if ($user != '') { ?>
-                                                    <div class="input-group" id="input-group<?= $curId ?>">
+                                                <?php if ($user != '') {
+                                                    $result_ban_author = pg_query('SELECT count(locked) FROM inc_user WHERE  locked = true and id=' . $au->getUserId($_SESSION['hash'])) or die('Ошибка запроса: ' . pg_last_error());
 
-                                                        <?php $curId = $line['id'];
-                                                        ?>
-                                                        <textarea name="hide" style="display:none;" class="form-control" id="answerInputArea<?= $curId ?>" maxlength="250" type="text" placeholder="Ответить на комментарий" required></textarea>
+                                                    $ban_author = pg_fetch_array($result_ban_author, null, PGSQL_ASSOC);
 
-                                                        <textarea class="form-control" id="commentInputArea<?= $curId ?>" maxlength="250" type="text" placeholder="Оставить комментарий" name="comment_push_enter" required></textarea>
+                                                    if ($ban_author['count'] == 0) {
+                                                ?>
+                                                        <div class="input-group" id="input-group<?= $curId ?>">
 
-                                                        <div class="input-group-append" id="commentInputDiv<?= $curId ?>">
-                                                            <?php
-
-                                                            $author = $au->getUserData($_SESSION['hash']);
-
+                                                            <?php $curId = $line['id'];
                                                             ?>
-                                                            <button type="button" id="commentInputBtn<?= $curId ?>" class="btn" style="" type="" onclick="DBAddComment('<?= $curId ?>','<?= $author['first_name'] ?>','<?= $author['middle_name'] ?>','<?= $author['last_name'] ?>','<?= $author['user_id'] ?>','<?= $author['login'] ?>')">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-arrow-right-circle-fill" viewBox="0 0 16 16">
-                                                                    <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0zM4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z" />
-                                                                </svg>
-                                                            </button>
+                                                            <textarea name="hide" style="display:none;" class="form-control" id="answerInputArea<?= $curId ?>" maxlength="250" type="text" placeholder="Ответить на комментарий" required></textarea>
 
+                                                            <textarea class="form-control" id="commentInputArea<?= $curId ?>" maxlength="250" type="text" placeholder="Оставить комментарий" name="comment_push_enter" required></textarea>
+
+                                                            <div class="input-group-append" id="commentInputDiv<?= $curId ?>">
+                                                                <?php
+
+                                                                $author = $au->getUserData($_SESSION['hash']);
+
+                                                                ?>
+                                                                <button type="button" id="commentInputBtn<?= $curId ?>" class="btn" style="" type="" onclick="DBAddComment('<?= $curId ?>','<?= $author['first_name'] ?>','<?= $author['middle_name'] ?>','<?= $author['last_name'] ?>','<?= $author['user_id'] ?>','<?= $author['login'] ?>')">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-arrow-right-circle-fill" viewBox="0 0 16 16">
+                                                                        <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0zM4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z" />
+                                                                    </svg>
+                                                                </button>
+
+                                                            </div>
+                                                        <?php
+                                                    } else {
+
+                                                        ?>
+                                                            <div class="container">
+                                                                <div class="row justify-content-center">
+                                                                    <input class="form-control" type="text" value="Вы заблокированы и не можете оставлять комментарии" aria-label="Disabled input example" disabled readonly>
+
+                                                                </div>
+                                                            <?php
+                                                        }
+                                                            ?>
+                                                           
                                                         </div>
+                                                        <?php if ($line['status'] <= 3) { ?>
+                                                            <div class="row" style="margin-top: 1rem;">
+                                                                <div class="col">
+                                                                    <!-- <a type="button" href="wantToBeExuter.php" class="btn btn-outline-secondary btn-sm">Хочу стать исполнителем идеи!</a> -->
+                                                                    <form id="checkInOut" action="wantToBeExuter.php" enctype="multipart/form-data" method="POST">
 
-
-                                                    </div>
-                                                    <?php if ($line['status'] <= 3) { ?>
-                                                        <div class="row" style="margin-top: 1rem;">
-                                                            <div class="col">
-                                                                <!-- <a type="button" href="wantToBeExuter.php" class="btn btn-outline-secondary btn-sm">Хочу стать исполнителем идеи!</a> -->
-                                                                <form id="checkInOut" action="wantToBeExuter.php" enctype="multipart/form-data" method="POST">
-
-                                                                    <input type="hidden" value="<?= $curId ?>" name="action">
-                                                                    <input type="submit" class="btn btn-outline-secondary btn-sm" value="Хочу стать исполнителем идеи!">
-                                                                </form>
+                                                                        <input type="hidden" value="<?= $curId ?>" name="action">
+                                                                        <input type="submit" class="btn btn-outline-secondary btn-sm" value="Хочу стать исполнителем идеи!">
+                                                                    </form>
+                                                                </div>
+                                                            </div>
+                                                        <?php } ?>
+                                                    <?php } else { ?>
+                                                        <div class="container">
+                                                            <div class="row justify-content-center">
+                                                                <input class="form-control" type="text" value="Оставлять комментарии могут только авторизированные пользователи" aria-label="Disabled input example" disabled readonly>
+                                                                <a class="btn btn-primary" style="margin-top: 1rem;" href="authSuggestion.php" role="button">Войти</a>
                                                             </div>
                                                         </div>
+                                                        </a>
                                                     <?php } ?>
-                                                <?php } else { ?>
-                                                    <div class="container">
-                                                        <div class="row justify-content-center">
-                                                            <input class="form-control" type="text" value="Оставлять комментарии могут только авторизированные пользователи" aria-label="Disabled input example" disabled readonly>
-                                                            <a class="btn btn-primary" style="margin-top: 1rem;" href="authSuggestion.php" role="button">Войти</a>
-                                                        </div>
+                                                    <div class="w-100" id="w-100"></div>
+                                                    <div id="commentErr<?= $curId ?>" class="d-none" style="color: red;">
+                                                        Пожалуйста введите текст
                                                     </div>
-                                                    </a>
-                                                <?php } ?>
-                                                <div class="w-100" id="w-100"></div>
-                                                <div id="commentErr<?= $curId ?>" class="d-none" style="color: red;">
-                                                    Пожалуйста введите текст
-                                                </div>
                                             </div>
                                         </div>
                                     </div>
