@@ -1,0 +1,1090 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 9.6.24
+-- Dumped by pg_dump version 9.6.24
+
+-- Started on 2023-03-10 14:21:55
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- TOC entry 2 (class 3079 OID 12387)
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- TOC entry 2263 (class 0 OID 0)
+-- Dependencies: 2
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+--
+-- TOC entry 1 (class 3079 OID 16384)
+-- Name: adminpack; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS adminpack WITH SCHEMA pg_catalog;
+
+
+--
+-- TOC entry 2264 (class 0 OID 0)
+-- Dependencies: 1
+-- Name: EXTENSION adminpack; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION adminpack IS 'administrative functions for PostgreSQL';
+
+
+SET default_tablespace = '';
+
+SET default_with_oids = true;
+
+--
+-- TOC entry 189 (class 1259 OID 32820)
+-- Name: group; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public."group" (
+    name text NOT NULL,
+    id integer NOT NULL
+);
+
+
+ALTER TABLE public."group" OWNER TO postgres;
+
+--
+-- TOC entry 208 (class 1259 OID 33078)
+-- Name: group_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.group_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.group_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2265 (class 0 OID 0)
+-- Dependencies: 208
+-- Name: group_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.group_id_seq OWNED BY public."group".id;
+
+
+SET default_with_oids = false;
+
+--
+-- TOC entry 206 (class 1259 OID 32996)
+-- Name: inc_budjet_operation; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.inc_budjet_operation (
+    id integer NOT NULL,
+    user_id integer,
+    delta real,
+    comment text
+);
+
+
+ALTER TABLE public.inc_budjet_operation OWNER TO postgres;
+
+--
+-- TOC entry 205 (class 1259 OID 32994)
+-- Name: inc_budjet_operation_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.inc_budjet_operation_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.inc_budjet_operation_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2266 (class 0 OID 0)
+-- Dependencies: 205
+-- Name: inc_budjet_operation_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.inc_budjet_operation_id_seq OWNED BY public.inc_budjet_operation.id;
+
+
+--
+-- TOC entry 200 (class 1259 OID 32937)
+-- Name: inc_comment; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.inc_comment (
+    id integer NOT NULL,
+    idea_id integer,
+    comment_id integer,
+    author_id integer,
+    description text,
+    created timestamp with time zone,
+    modified timestamp with time zone
+);
+
+
+ALTER TABLE public.inc_comment OWNER TO postgres;
+
+--
+-- TOC entry 199 (class 1259 OID 32935)
+-- Name: inc_comment_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.inc_comment_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.inc_comment_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2267 (class 0 OID 0)
+-- Dependencies: 199
+-- Name: inc_comment_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.inc_comment_id_seq OWNED BY public.inc_comment.id;
+
+
+SET default_with_oids = true;
+
+--
+-- TOC entry 202 (class 1259 OID 32964)
+-- Name: inc_comment_like; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.inc_comment_like (
+    id integer NOT NULL,
+    comment_id integer,
+    user_id integer,
+    value integer
+);
+
+
+ALTER TABLE public.inc_comment_like OWNER TO postgres;
+
+--
+-- TOC entry 201 (class 1259 OID 32962)
+-- Name: inc_comment_like_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.inc_comment_like_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.inc_comment_like_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2268 (class 0 OID 0)
+-- Dependencies: 201
+-- Name: inc_comment_like_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.inc_comment_like_id_seq OWNED BY public.inc_comment_like.id;
+
+
+--
+-- TOC entry 204 (class 1259 OID 32980)
+-- Name: inc_executors; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.inc_executors (
+    id integer NOT NULL,
+    idea_id integer,
+    user_id integer,
+    role integer,
+    role_date timestamp with time zone
+);
+
+
+ALTER TABLE public.inc_executors OWNER TO postgres;
+
+--
+-- TOC entry 203 (class 1259 OID 32978)
+-- Name: inc_executors_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.inc_executors_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.inc_executors_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2269 (class 0 OID 0)
+-- Dependencies: 203
+-- Name: inc_executors_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.inc_executors_id_seq OWNED BY public.inc_executors.id;
+
+
+SET default_with_oids = false;
+
+--
+-- TOC entry 193 (class 1259 OID 32867)
+-- Name: inc_idea; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.inc_idea (
+    id integer NOT NULL,
+    title text,
+    description text,
+    author integer,
+    status integer,
+    created timestamp with time zone,
+    modified timestamp with time zone,
+    vote_start timestamp with time zone,
+    vote_finish timestamp with time zone,
+    freetry_start timestamp with time zone,
+    freetry_finish timestamp with time zone,
+    image text,
+    "pro_cost real" real,
+    contra_cost real,
+    exec_cost real,
+    points real
+);
+
+
+ALTER TABLE public.inc_idea OWNER TO postgres;
+
+SET default_with_oids = true;
+
+--
+-- TOC entry 197 (class 1259 OID 32907)
+-- Name: inc_idea_files; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.inc_idea_files (
+    id integer NOT NULL,
+    idea_id integer,
+    link text
+);
+
+
+ALTER TABLE public.inc_idea_files OWNER TO postgres;
+
+--
+-- TOC entry 196 (class 1259 OID 32905)
+-- Name: inc_idea_files_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.inc_idea_files_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.inc_idea_files_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2270 (class 0 OID 0)
+-- Dependencies: 196
+-- Name: inc_idea_files_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.inc_idea_files_id_seq OWNED BY public.inc_idea_files.id;
+
+
+--
+-- TOC entry 192 (class 1259 OID 32865)
+-- Name: inc_idea_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.inc_idea_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.inc_idea_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2271 (class 0 OID 0)
+-- Dependencies: 192
+-- Name: inc_idea_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.inc_idea_id_seq OWNED BY public.inc_idea.id;
+
+
+--
+-- TOC entry 195 (class 1259 OID 32887)
+-- Name: inc_idea_tag; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.inc_idea_tag (
+    id integer NOT NULL,
+    idea_id integer,
+    tag text
+);
+
+
+ALTER TABLE public.inc_idea_tag OWNER TO postgres;
+
+--
+-- TOC entry 194 (class 1259 OID 32885)
+-- Name: inc_idea_tag_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.inc_idea_tag_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.inc_idea_tag_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2272 (class 0 OID 0)
+-- Dependencies: 194
+-- Name: inc_idea_tag_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.inc_idea_tag_id_seq OWNED BY public.inc_idea_tag.id;
+
+
+--
+-- TOC entry 198 (class 1259 OID 32921)
+-- Name: inc_idea_vote; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.inc_idea_vote (
+    idea_id integer,
+    user_id integer,
+    value integer,
+    id integer NOT NULL
+);
+
+
+ALTER TABLE public.inc_idea_vote OWNER TO postgres;
+
+--
+-- TOC entry 207 (class 1259 OID 33012)
+-- Name: inc_idea_vote_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.inc_idea_vote_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.inc_idea_vote_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2273 (class 0 OID 0)
+-- Dependencies: 207
+-- Name: inc_idea_vote_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.inc_idea_vote_id_seq OWNED BY public.inc_idea_vote.id;
+
+
+--
+-- TOC entry 191 (class 1259 OID 32857)
+-- Name: inc_user; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.inc_user (
+    id integer,
+    rating real,
+    budjet real,
+    locked boolean
+);
+
+
+ALTER TABLE public.inc_user OWNER TO postgres;
+
+--
+-- TOC entry 188 (class 1259 OID 32795)
+-- Name: students; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.students (
+    id integer,
+    first_name text,
+    middle_name text,
+    last_name text,
+    login text
+);
+
+
+ALTER TABLE public.students OWNER TO postgres;
+
+--
+-- TOC entry 190 (class 1259 OID 32831)
+-- Name: students_to_groups; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.students_to_groups (
+    student_id integer,
+    group_id integer,
+    id integer NOT NULL
+);
+
+
+ALTER TABLE public.students_to_groups OWNER TO postgres;
+
+--
+-- TOC entry 209 (class 1259 OID 33089)
+-- Name: students_to_groups_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.students_to_groups_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.students_to_groups_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2274 (class 0 OID 0)
+-- Dependencies: 209
+-- Name: students_to_groups_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.students_to_groups_id_seq OWNED BY public.students_to_groups.id;
+
+
+--
+-- TOC entry 187 (class 1259 OID 32791)
+-- Name: users; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.users (
+    id integer NOT NULL,
+    role integer
+);
+
+
+ALTER TABLE public.users OWNER TO postgres;
+
+--
+-- TOC entry 186 (class 1259 OID 32789)
+-- Name: user_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.user_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.user_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2275 (class 0 OID 0)
+-- Dependencies: 186
+-- Name: user_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.user_id_seq OWNED BY public.users.id;
+
+
+--
+-- TOC entry 2078 (class 2604 OID 33080)
+-- Name: group id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public."group" ALTER COLUMN id SET DEFAULT nextval('public.group_id_seq'::regclass);
+
+
+--
+-- TOC entry 2087 (class 2604 OID 32999)
+-- Name: inc_budjet_operation id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.inc_budjet_operation ALTER COLUMN id SET DEFAULT nextval('public.inc_budjet_operation_id_seq'::regclass);
+
+
+--
+-- TOC entry 2084 (class 2604 OID 32940)
+-- Name: inc_comment id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.inc_comment ALTER COLUMN id SET DEFAULT nextval('public.inc_comment_id_seq'::regclass);
+
+
+--
+-- TOC entry 2085 (class 2604 OID 32967)
+-- Name: inc_comment_like id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.inc_comment_like ALTER COLUMN id SET DEFAULT nextval('public.inc_comment_like_id_seq'::regclass);
+
+
+--
+-- TOC entry 2086 (class 2604 OID 32983)
+-- Name: inc_executors id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.inc_executors ALTER COLUMN id SET DEFAULT nextval('public.inc_executors_id_seq'::regclass);
+
+
+--
+-- TOC entry 2080 (class 2604 OID 32870)
+-- Name: inc_idea id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.inc_idea ALTER COLUMN id SET DEFAULT nextval('public.inc_idea_id_seq'::regclass);
+
+
+--
+-- TOC entry 2082 (class 2604 OID 32910)
+-- Name: inc_idea_files id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.inc_idea_files ALTER COLUMN id SET DEFAULT nextval('public.inc_idea_files_id_seq'::regclass);
+
+
+--
+-- TOC entry 2081 (class 2604 OID 32890)
+-- Name: inc_idea_tag id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.inc_idea_tag ALTER COLUMN id SET DEFAULT nextval('public.inc_idea_tag_id_seq'::regclass);
+
+
+--
+-- TOC entry 2083 (class 2604 OID 33014)
+-- Name: inc_idea_vote id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.inc_idea_vote ALTER COLUMN id SET DEFAULT nextval('public.inc_idea_vote_id_seq'::regclass);
+
+
+--
+-- TOC entry 2079 (class 2604 OID 33091)
+-- Name: students_to_groups id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.students_to_groups ALTER COLUMN id SET DEFAULT nextval('public.students_to_groups_id_seq'::regclass);
+
+
+--
+-- TOC entry 2077 (class 2604 OID 32794)
+-- Name: users id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.user_id_seq'::regclass);
+
+
+--
+-- TOC entry 2235 (class 0 OID 32820)
+-- Dependencies: 189
+-- Data for Name: group; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public."group" (name, id) FROM stdin;
+КМБО-02-19	1
+КМБО-05-19	2
+\.
+
+
+--
+-- TOC entry 2276 (class 0 OID 0)
+-- Dependencies: 208
+-- Name: group_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.group_id_seq', 1, true);
+
+
+--
+-- TOC entry 2252 (class 0 OID 32996)
+-- Dependencies: 206
+-- Data for Name: inc_budjet_operation; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.inc_budjet_operation (id, user_id, delta, comment) FROM stdin;
+\.
+
+
+--
+-- TOC entry 2277 (class 0 OID 0)
+-- Dependencies: 205
+-- Name: inc_budjet_operation_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.inc_budjet_operation_id_seq', 1, false);
+
+
+--
+-- TOC entry 2246 (class 0 OID 32937)
+-- Dependencies: 200
+-- Data for Name: inc_comment; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.inc_comment (id, idea_id, comment_id, author_id, description, created, modified) FROM stdin;
+40	0	-1	123	wdaescfdsxv	2023-03-10 11:45:37+03	2023-03-10 11:45:37+03
+41	0	40	666	Kruzhkov Oleg, tedrgfred	2023-03-10 11:46:22+03	2023-03-10 11:46:22+03
+42	0	40	432	Volkov Artem, hdf	2023-03-10 11:46:47+03	2023-03-10 11:46:47+03
+43	0	-1	666	rdfgdf	2023-03-10 11:53:11+03	2023-03-10 11:53:11+03
+44	0	43	666	Volkov Artem, utgj	2023-03-10 11:53:18+03	2023-03-10 11:53:18+03
+\.
+
+
+--
+-- TOC entry 2278 (class 0 OID 0)
+-- Dependencies: 199
+-- Name: inc_comment_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.inc_comment_id_seq', 44, true);
+
+
+--
+-- TOC entry 2248 (class 0 OID 32964)
+-- Dependencies: 202
+-- Data for Name: inc_comment_like; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.inc_comment_like (id, comment_id, user_id, value) FROM stdin;
+\.
+
+
+--
+-- TOC entry 2279 (class 0 OID 0)
+-- Dependencies: 201
+-- Name: inc_comment_like_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.inc_comment_like_id_seq', 1, false);
+
+
+--
+-- TOC entry 2250 (class 0 OID 32980)
+-- Dependencies: 204
+-- Data for Name: inc_executors; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.inc_executors (id, idea_id, user_id, role, role_date) FROM stdin;
+3	1	432	3	2023-03-10 11:00:32+03
+4	0	666	0	2023-03-10 12:11:17+03
+2	0	432	0	2023-03-10 12:11:18+03
+4	0	333	1	2023-03-10 12:12:49+03
+1	0	123	1	2023-03-10 12:12:49+03
+5	0	1	2	2023-03-10 12:12:49+03
+\.
+
+
+--
+-- TOC entry 2280 (class 0 OID 0)
+-- Dependencies: 203
+-- Name: inc_executors_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.inc_executors_id_seq', 4, true);
+
+
+--
+-- TOC entry 2239 (class 0 OID 32867)
+-- Dependencies: 193
+-- Data for Name: inc_idea; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.inc_idea (id, title, description, author, status, created, modified, vote_start, vote_finish, freetry_start, freetry_finish, image, "pro_cost real", contra_cost, exec_cost, points) FROM stdin;
+1	32qew	qrewds	432	3	2023-03-10 11:00:32+03	2023-03-10 11:00:32+03	2023-03-11 00:00:00+03	2023-03-29 00:00:00+03	\N	\N	./assets/images/30420d1a9afb2bcb60335812569af4435a59ce17.jpeg	0	0	0	0
+0	21й4уц	2йуц	123	7	2023-03-10 10:09:41+03	2023-03-10 10:09:41+03	2023-03-09 00:00:00+03	2023-03-09 00:00:00+03	2023-03-11 00:00:00+03	2023-03-31 00:00:00+03	./assets/images/a286f6c23fa54d27a039d6f4c96daa6671e47a0c.png	0	0	0	0
+\.
+
+
+--
+-- TOC entry 2243 (class 0 OID 32907)
+-- Dependencies: 197
+-- Data for Name: inc_idea_files; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.inc_idea_files (id, idea_id, link) FROM stdin;
+\.
+
+
+--
+-- TOC entry 2281 (class 0 OID 0)
+-- Dependencies: 196
+-- Name: inc_idea_files_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.inc_idea_files_id_seq', 1, false);
+
+
+--
+-- TOC entry 2282 (class 0 OID 0)
+-- Dependencies: 192
+-- Name: inc_idea_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.inc_idea_id_seq', 1, true);
+
+
+--
+-- TOC entry 2241 (class 0 OID 32887)
+-- Dependencies: 195
+-- Data for Name: inc_idea_tag; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.inc_idea_tag (id, idea_id, tag) FROM stdin;
+12	0	да
+13	1	redfgh
+\.
+
+
+--
+-- TOC entry 2283 (class 0 OID 0)
+-- Dependencies: 194
+-- Name: inc_idea_tag_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.inc_idea_tag_id_seq', 13, true);
+
+
+--
+-- TOC entry 2244 (class 0 OID 32921)
+-- Dependencies: 198
+-- Data for Name: inc_idea_vote; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.inc_idea_vote (idea_id, user_id, value, id) FROM stdin;
+0	123	-1	3
+0	432	1	4
+0	666	1	5
+\.
+
+
+--
+-- TOC entry 2284 (class 0 OID 0)
+-- Dependencies: 207
+-- Name: inc_idea_vote_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.inc_idea_vote_id_seq', 5, true);
+
+
+--
+-- TOC entry 2237 (class 0 OID 32857)
+-- Dependencies: 191
+-- Data for Name: inc_user; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.inc_user (id, rating, budjet, locked) FROM stdin;
+\.
+
+
+--
+-- TOC entry 2234 (class 0 OID 32795)
+-- Dependencies: 188
+-- Data for Name: students; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.students (id, first_name, middle_name, last_name, login) FROM stdin;
+123	Oleg	Kruzhkov	Igorevich	\N
+1	Denis	Drejfield	Erihovich	\N
+666	Artem	Volkov	OchenKrutoy	\N
+333	Vlad	Smirnov	Da	\N
+432	Alexey	Fil	Net	\N
+\.
+
+
+--
+-- TOC entry 2236 (class 0 OID 32831)
+-- Dependencies: 190
+-- Data for Name: students_to_groups; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.students_to_groups (student_id, group_id, id) FROM stdin;
+123	1	1
+1	1	2
+666	1	3
+432	1	4
+333	2	5
+\.
+
+
+--
+-- TOC entry 2285 (class 0 OID 0)
+-- Dependencies: 209
+-- Name: students_to_groups_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.students_to_groups_id_seq', 1, true);
+
+
+--
+-- TOC entry 2286 (class 0 OID 0)
+-- Dependencies: 186
+-- Name: user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.user_id_seq', 1, false);
+
+
+--
+-- TOC entry 2233 (class 0 OID 32791)
+-- Dependencies: 187
+-- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.users (id, role) FROM stdin;
+123	1
+1	2
+666	3
+432	2
+333	3
+\.
+
+
+--
+-- TOC entry 2092 (class 2606 OID 33088)
+-- Name: group group_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public."group"
+    ADD CONSTRAINT group_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2098 (class 2606 OID 32961)
+-- Name: inc_comment inc_comment_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.inc_comment
+    ADD CONSTRAINT inc_comment_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2094 (class 2606 OID 32884)
+-- Name: inc_idea inc_idea_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.inc_idea
+    ADD CONSTRAINT inc_idea_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2096 (class 2606 OID 33019)
+-- Name: inc_idea_vote inc_idea_vote_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.inc_idea_vote
+    ADD CONSTRAINT inc_idea_vote_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2089 (class 2606 OID 32802)
+-- Name: users user_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT user_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2090 (class 1259 OID 32808)
+-- Name: fki_id; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX fki_id ON public.students USING btree (id);
+
+
+--
+-- TOC entry 2103 (class 2606 OID 32900)
+-- Name: inc_idea author; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.inc_idea
+    ADD CONSTRAINT author FOREIGN KEY (author) REFERENCES public.users(id) NOT VALID;
+
+
+--
+-- TOC entry 2109 (class 2606 OID 32949)
+-- Name: inc_comment author_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.inc_comment
+    ADD CONSTRAINT author_id FOREIGN KEY (author_id) REFERENCES public.users(id);
+
+
+--
+-- TOC entry 2110 (class 2606 OID 32968)
+-- Name: inc_comment_like comment_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.inc_comment_like
+    ADD CONSTRAINT comment_id FOREIGN KEY (comment_id) REFERENCES public.inc_comment(id);
+
+
+--
+-- TOC entry 2101 (class 2606 OID 33095)
+-- Name: students_to_groups group_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.students_to_groups
+    ADD CONSTRAINT group_id FOREIGN KEY (group_id) REFERENCES public."group"(id) NOT VALID;
+
+
+--
+-- TOC entry 2099 (class 2606 OID 32803)
+-- Name: students id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.students
+    ADD CONSTRAINT id FOREIGN KEY (id) REFERENCES public.users(id) NOT VALID;
+
+
+--
+-- TOC entry 2102 (class 2606 OID 32860)
+-- Name: inc_user id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.inc_user
+    ADD CONSTRAINT id FOREIGN KEY (id) REFERENCES public.users(id);
+
+
+--
+-- TOC entry 2104 (class 2606 OID 32894)
+-- Name: inc_idea_tag idea_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.inc_idea_tag
+    ADD CONSTRAINT idea_id FOREIGN KEY (idea_id) REFERENCES public.inc_idea(id);
+
+
+--
+-- TOC entry 2105 (class 2606 OID 32914)
+-- Name: inc_idea_files idea_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.inc_idea_files
+    ADD CONSTRAINT idea_id FOREIGN KEY (idea_id) REFERENCES public.inc_idea(id);
+
+
+--
+-- TOC entry 2106 (class 2606 OID 32925)
+-- Name: inc_idea_vote idea_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.inc_idea_vote
+    ADD CONSTRAINT idea_id FOREIGN KEY (idea_id) REFERENCES public.inc_idea(id);
+
+
+--
+-- TOC entry 2108 (class 2606 OID 32944)
+-- Name: inc_comment idea_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.inc_comment
+    ADD CONSTRAINT idea_id FOREIGN KEY (idea_id) REFERENCES public.inc_idea(id);
+
+
+--
+-- TOC entry 2112 (class 2606 OID 32984)
+-- Name: inc_executors idea_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.inc_executors
+    ADD CONSTRAINT idea_id FOREIGN KEY (idea_id) REFERENCES public.inc_idea(id);
+
+
+--
+-- TOC entry 2100 (class 2606 OID 32835)
+-- Name: students_to_groups student_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.students_to_groups
+    ADD CONSTRAINT student_id FOREIGN KEY (student_id) REFERENCES public.users(id);
+
+
+--
+-- TOC entry 2107 (class 2606 OID 32930)
+-- Name: inc_idea_vote user_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.inc_idea_vote
+    ADD CONSTRAINT user_id FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
+-- TOC entry 2111 (class 2606 OID 32973)
+-- Name: inc_comment_like user_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.inc_comment_like
+    ADD CONSTRAINT user_id FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
+-- TOC entry 2113 (class 2606 OID 32989)
+-- Name: inc_executors user_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.inc_executors
+    ADD CONSTRAINT user_id FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
+-- TOC entry 2114 (class 2606 OID 33003)
+-- Name: inc_budjet_operation user_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.inc_budjet_operation
+    ADD CONSTRAINT user_id FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+-- Completed on 2023-03-10 14:21:56
+
+--
+-- PostgreSQL database dump complete
+--
+
