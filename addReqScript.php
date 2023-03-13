@@ -1,4 +1,6 @@
 <?php
+
+session_start();
 require_once('config/dbFunc.class.php');
 include_once('../auth/auth_ssh.class.php');
 

@@ -1,5 +1,5 @@
 <?php
-
+session_start();
 include_once('../auth/auth_ssh.class.php');
 require_once('config/dbFunc.class.php');
 

@@ -7,6 +7,7 @@
     <script src="http://code.jquery.com/jquery-2.0.2.min.js"></script>
     <script type="text/javascript" src="jquery.js"></script>
     <script src="http://localhost/votesite/votesite/jsScripts/DBaddReq.js"></script>
+    <script src="http://localhost/votesite/votesite/jsScripts/userEditIdea.js"></script>
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -43,6 +44,7 @@
 
 
         <div class="container">
+        
             <div class="row justify-content-center">
                 <div class="col">
 
@@ -69,8 +71,6 @@
                     <div class="container">
                         <div class="row">
                             <div class="input-group">
-
-
                                 <div class="mb-3 d-flex flex-column">
                                     <label for="formFile" class="form-label">Выберите изoбражение для идеи</label>
                                     <div class="mb-3" style="display:flex; justify-content: space-between;">

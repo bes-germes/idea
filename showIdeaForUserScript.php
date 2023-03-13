@@ -50,7 +50,8 @@ if (isset($_POST['postId'])) {
 
 
         <?php
-
+        session_start();
+        
         include_once('config\dbFunc.class.php');
         include_once('../auth/auth_ssh.class.php');
 
