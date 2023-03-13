@@ -457,7 +457,7 @@
                                                         ?>
                                                         <textarea name="hide" style="display:none;" class="form-control" id="answerInputArea<?= $curId ?>" maxlength="250" type="text" placeholder="Ответить на комментарий" required></textarea>
 
-                                                        <textarea class="form-control" id="commentInputArea<?= $curId ?>" maxlength="250" type="text" placeholder="Оставить комментраий" name="comment_push_enter" required></textarea>
+                                                        <textarea class="form-control" id="commentInputArea<?= $curId ?>" maxlength="250" type="text" placeholder="Оставить комментарий" name="comment_push_enter" required></textarea>
 
                                                         <div class="input-group-append" id="commentInputDiv<?= $curId ?>">
                                                             <?php 
