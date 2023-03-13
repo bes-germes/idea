@@ -12,9 +12,10 @@
     <script type="text/javascript" src="https://unpkg.com/tooltip.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
-    <script src="http://localhost/votesite/votesite/jsScripts/DBAddComment.js"></script>
-    <script src="http://localhost/votesite/votesite/jsScripts/DBAddLikeDislike.js"></script>
-    <script src="http://localhost/votesite/votesite/jsScripts/DBShowReply.js"></script>
+    <script src="http://localhost/idea/jsScripts/DBAddComment.js"></script>
+    <script src="http://localhost/idea/jsScripts/DBAddLikeDislike.js"></script>
+    <script src="http://localhost/idea/jsScripts/DBShowReply.js"></script>
+    <script src="http://localhost/idea/jsScripts/DBBanUser.js"></script>
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -370,80 +371,87 @@
 
                                             while ($comment = pg_fetch_array($result_comments, null, PGSQL_ASSOC)) {
                                                 $result_author = pg_query('SELECT * FROM students WHERE id=' . $comment['author_id']) or die('Ошибка запроса: ' . pg_last_error());
-                                               
+
                                                 $author = pg_fetch_array($result_author, null, PGSQL_ASSOC);
+                                                $result_ban_author = pg_query('SELECT count(locked) FROM inc_user WHERE  locked = true and id=' . $comment['author_id']) or die('Ошибка запроса: ' . pg_last_error());
+     
+                                                $ban_author = pg_fetch_array($result_ban_author, null, PGSQL_ASSOC);
+                                                
+                                                if ($ban_author['count'] == 0) {
                                             ?>
-                                                <div class="comment_body" id="comment_body<?= $comment['id'] ?>">
-                                                    <div class="comment_head">
-                                                        <?= $author['middle_name'] . " " . $author['first_name'] ?>
-                                                    </div>
-                                                    <div class="comment_inner text-break display: inline-block; width:100px; height:50px;">
-                                                        <?= $comment['description'] ?>
-                                                    </div>
-                                                    <div class="comment_time">
-                                                        <?=
-                                                        date('d.m.Y H:i:s', strtotime($comment['created']));
+                                                    <div class="comment_body" id="comment_body<?= $comment['id'] ?>">
+                                                        <div class="comment_head">
+                                                            <?= $author['middle_name'] . " " . $author['first_name'] ?>
+                                                        </div>
+                                                        <div class="comment_inner text-break display: inline-block; width:100px; height:50px;">
+                                                            <?= $comment['description'] ?>
+                                                        </div>
+                                                        <div class="comment_time">
+                                                            <?=
+                                                            date('d.m.Y H:i:s', strtotime($comment['created']));
+                                                            ?>
+
+                                                            <?php if ($au->isAdmin($_SESSION['hash'])) { ?>
+                                                                <button type="button" id="delete_btn<?= $comment['id'] ?>" value="<?= $comment['id'] ?>" class="btn" style="max-width: 100px; color: black; background-color: white; font-size: 13px;" onclick="DBDeleteComment(<?= $comment['id'] ?>)">Удалить</button>
+                                                                <button type="button" id="ban_user<?= $comment['id'] ?>" value="<?= $comment['id'] ?>" class="btn" style="max-width: 100px; color: black; background-color: white; font-size: 13px;" onclick="DBBanUser(<?= $author['id'] ?>)">Забанить</button>
+                                                            <?php } ?>
+                                                        </div>
+
+                                                        <?php $count = pg_fetch_row(pg_query($db, "SELECT count(*) FROM inc_comment WHERE comment_id =" . $comment['id']));
+
+                                                        if ($count[0] != 0) {
                                                         ?>
-
-                                                        <?php if ($au->isAdmin($_SESSION['hash'])) { ?>
-                                                            <button type="button" id="delete_btn<?= $comment['id'] ?>" value="<?= $comment['id'] ?>" class="btn" style="max-width: 100px; color: black; background-color: white; font-size: 13px;" onclick="DBDeleteComment(<?= $comment['id'] ?>)">Удалить</button>
-                                                        <?php } ?>
-                                                    </div>
-
-                                                    <?php $count = pg_fetch_row(pg_query($db, "SELECT count(*) FROM inc_comment WHERE comment_id =" . $comment['id']));
-
-                                                    if ($count[0] != 0) {
-                                                    ?>
-                                                        <button type="button" id="rpy_btn<?= $comment['id'] ?>" value="<?= $comment['id'] ?>" class="btn" style="max-width: 100px; color: black; background-color: white; font-size: 13px;" onclick="DBShowReply(<?= $comment['id'] ?>, <?= $comment['idea_id'] ?>)">Развернуть</button>
-
-                                                    <?php
-                                                    } else {
-                                                    ?>
-                                                        <button type="button" id="rpy_btn<?= $comment['id'] ?>" value="<?= $comment['id'] ?>" class="btn" style="max-width: 100px; color: black; background-color: white; font-size: 13px;" onclick="DBAnwerToComment(<?= $comment['id'] ?>, <?= $comment['idea_id'] ?>, '<?= $author['middle_name'] . ' ' . $author['first_name'] ?>')">Ответить</button>
-                                                    <?php
-                                                    }
-                                                    ?>
-                                                    <div class="d-none" id="comment_reply<?= $comment['id'] ?>" style="flex-direction: column;display: flex;padding: 10px;margin-right: 65px;margin-left: 60px;">
-                                                        <?php
-                                                        $query_comments_reply = 'SELECT * FROM inc_comment WHERE comment_id != -1';
-                                                        $result_comments_reply = pg_query($query_comments_reply) or die('Ошибка запроса: ' . pg_last_error());
-                                                        while ($comment_reply = pg_fetch_array($result_comments_reply, null, PGSQL_ASSOC)) {
-                                                            if ($comment_reply['comment_id'] == $comment['id']) {
-                                                                $result_author = pg_query('SELECT * FROM students WHERE id=' . $comment_reply['author_id']) or die('Ошибка запроса: ' . pg_last_error());
-                                                                $author = pg_fetch_array($result_author, null, PGSQL_ASSOC);
-
-                                                                $result_delete_comm = pg_query($db, "SELECT id FROM inc_comment WHERE description = '" . $comment_reply['description'] . "'");
-                                                                $delete_com_id = pg_fetch_array($result_delete_comm, null, PGSQL_ASSOC);
-
-
-
-                                                        ?>
-                                                                <div class="comment_head">
-                                                                    <?= $author['middle_name'] . " " . $author['first_name'] ?>
-                                                                </div>
-                                                                <div class="comment_inner text-wrap">
-                                                                    <?= $comment_reply['description'] ?>
-                                                                </div>
-                                                                <div class="comment_time">
-                                                                    <?=
-                                                                    date('d.m.Y H:i:s', strtotime($comment_reply['created']));
-                                                                    ?>
-                                                                    <button type="button" id="answer_btn<?= $comment['id'] ?>" value="<?= $comment['id'] ?>" class="btn" style="max-width: 100px; color: black; background-color: white; font-size: 13px;" onclick="DBAnwerToComment(<?= $comment['id'] ?>, <?= $comment['idea_id'] ?>, '<?= $author['middle_name'] . ' ' . $author['first_name'] ?>')">Ответить</button>
-                                                                    <?php if ($au->isAdmin($_SESSION['hash'])) { ?>
-                                                                        <button type="button" id="delete_btn<?= $comment['id'] ?>" value="<?= $comment['id'] ?>" class="btn" style="max-width: 100px; color: black; background-color: white; font-size: 13px;" onclick="DBDeleteComment(<?= $delete_com_id['id'] ?>)">Удалить</button>
-                                                                    <?php } ?>
-                                                                </div>
+                                                            <button type="button" id="rpy_btn<?= $comment['id'] ?>" value="<?= $comment['id'] ?>" class="btn" style="max-width: 100px; color: black; background-color: white; font-size: 13px;" onclick="DBShowReply(<?= $comment['id'] ?>, <?= $comment['idea_id'] ?>)">Развернуть</button>
 
                                                         <?php
-                                                            }
+                                                        } else {
+                                                        ?>
+                                                            <button type="button" id="rpy_btn<?= $comment['id'] ?>" value="<?= $comment['id'] ?>" class="btn" style="max-width: 100px; color: black; background-color: white; font-size: 13px;" onclick="DBAnwerToComment(<?= $comment['id'] ?>, <?= $comment['idea_id'] ?>, '<?= $author['middle_name'] . ' ' . $author['first_name'] ?>')">Ответить</button>
+                                                        <?php
                                                         }
                                                         ?>
+                                                        <div class="d-none" id="comment_reply<?= $comment['id'] ?>" style="flex-direction: column;display: flex;padding: 10px;margin-right: 65px;margin-left: 60px;">
+                                                            <?php
+                                                            $query_comments_reply = 'SELECT * FROM inc_comment WHERE comment_id != -1';
+                                                            $result_comments_reply = pg_query($query_comments_reply) or die('Ошибка запроса: ' . pg_last_error());
+                                                            while ($comment_reply = pg_fetch_array($result_comments_reply, null, PGSQL_ASSOC)) {
+                                                                if ($comment_reply['comment_id'] == $comment['id']) {
+                                                                    $result_author = pg_query('SELECT * FROM students WHERE id=' . $comment_reply['author_id']) or die('Ошибка запроса: ' . pg_last_error());
+                                                                    $author = pg_fetch_array($result_author, null, PGSQL_ASSOC);
 
+                                                                    $result_delete_comm = pg_query($db, "SELECT id FROM inc_comment WHERE description = '" . $comment_reply['description'] . "'");
+                                                                    $delete_com_id = pg_fetch_array($result_delete_comm, null, PGSQL_ASSOC);
+
+
+
+                                                            ?>
+                                                                    <div class="comment_head">
+                                                                        <?= $author['middle_name'] . " " . $author['first_name'] ?>
+                                                                    </div>
+                                                                    <div class="comment_inner text-wrap">
+                                                                        <?= $comment_reply['description'] ?>
+                                                                    </div>
+                                                                    <div class="comment_time">
+                                                                        <?=
+                                                                        date('d.m.Y H:i:s', strtotime($comment_reply['created']));
+                                                                        ?>
+                                                                        <button type="button" id="answer_btn<?= $comment['id'] ?>" value="<?= $comment['id'] ?>" class="btn" style="max-width: 100px; color: black; background-color: white; font-size: 13px;" onclick="DBAnwerToComment(<?= $comment['id'] ?>, <?= $comment['idea_id'] ?>, '<?= $author['middle_name'] . ' ' . $author['first_name'] ?>')">Ответить</button>
+                                                                        <?php if ($au->isAdmin($_SESSION['hash'])) { ?>
+                                                                            <button type="button" id="delete_btn<?= $comment['id'] ?>" value="<?= $comment['id'] ?>" class="btn" style="max-width: 100px; color: black; background-color: white; font-size: 13px;" onclick="DBDeleteComment(<?= $delete_com_id['id'] ?>)">Удалить</button>
+                                                                        <?php } ?>
+                                                                    </div>
+
+                                                            <?php
+                                                                }
+                                                            }
+                                                            ?>
+
+                                                        </div>
                                                     </div>
-                                                </div>
 
 
                                             <?php
+                                                }
                                             } ?>
                                         </div>
 
@@ -460,11 +468,11 @@
                                                         <textarea class="form-control" id="commentInputArea<?= $curId ?>" maxlength="250" type="text" placeholder="Оставить комментарий" name="comment_push_enter" required></textarea>
 
                                                         <div class="input-group-append" id="commentInputDiv<?= $curId ?>">
-                                                            <?php 
-        
+                                                            <?php
+
                                                             $author = $au->getUserData($_SESSION['hash']);
 
-                                                             ?>
+                                                            ?>
                                                             <button type="button" id="commentInputBtn<?= $curId ?>" class="btn" style="" type="" onclick="DBAddComment('<?= $curId ?>','<?= $author['first_name'] ?>','<?= $author['middle_name'] ?>','<?= $author['last_name'] ?>','<?= $author['user_id'] ?>','<?= $author['login'] ?>')">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-arrow-right-circle-fill" viewBox="0 0 16 16">
                                                                     <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0zM4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z" />

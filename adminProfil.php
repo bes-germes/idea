@@ -6,8 +6,8 @@
     <script src="http://code.jquery.com/jquery-2.0.2.min.js"></script>
     <script type="text/javascript" src="jquery.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <script src="http://localhost/votesite/votesite/jsScripts/DBShowAthorIdeas.js"></script>
-    <script src="http://localhost/votesite/votesite/jsScripts/DBShowIdeaForAdmin.js"></script>
+    <script src="http://localhost/idea/jsScripts/DBShowAthorIdeas.js"></script>
+    <script src="http://localhost/idea/jsScripts/DBShowIdeaForAdmin.js"></script>
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -44,7 +44,7 @@
 
     <?php
     session_start();
-    
+
     include_once('../auth/auth_ssh.class.php');
     $au = new auth_ssh();
 
@@ -125,6 +125,9 @@
                     <div class="col-12 col-sm-12 col-md-12 col-lg-auto col-xl-auto mb-sm-2 mb-md-2 mb-lg-0">
                         <button type="button" id="show_in_progress_ideas" value="show" style="margin-top: 15px;" href="?flag=2" class="btn btn-primary rounded-pill w-100" onclick="DBshowBannedIdeas()">Забаненные идеи</button>
                         <input type="hidden" name="action" id="staus" value="and (status != 5 and status != 8 and status != 2 and status != 7)">
+                    </div>
+                    <div class="col-12 col-sm-12 col-md-12 col-lg-auto col-xl-auto mb-sm-2 mb-md-2 mb-lg-0">
+                        <a role="button" id="show_banned_users" value="show" style="margin-top: 15px;" href="bannedUsers.php" class="btn btn-primary rounded-pill w-100">Забаненные Пользователи</a>
                     </div>
 
                     <div class="row d-none" id="ideas_row" style="margin-top: 15px;">
