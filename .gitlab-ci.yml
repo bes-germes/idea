@@ -13,6 +13,7 @@ pull-site:
       - cd /var/vega.fcyb.mirea.ru/idea/
       - git pull origin ${CI_COMMIT_REF_NAME}
       - git checkout ${CI_COMMIT_SHORT_SHA}
+      - git submodule update --recursive
       - git reset --hard
     tags:
       - vega-site
