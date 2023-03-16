@@ -1,0 +1,18 @@
+variables:
+  GIT_SUBMODULE_STRATEGY: none
+  GIT_CLEAN_FLAGS: none
+  GIT_STRATEGY: none
+
+stages:
+  - deploy
+
+pull-site:
+    when: manual
+    stage: deploy
+    script:
+      - cd /var/vega.fcyb.mirea.ru/idea/
+      - git pull origin ${CI_COMMIT_REF_NAME}
+      - git checkout ${CI_COMMIT_SHORT_SHA}
+      - git reset --hard
+    tags:
+      - vega-site
