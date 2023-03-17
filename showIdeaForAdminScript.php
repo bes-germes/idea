@@ -25,8 +25,8 @@ if (isset($_POST['postId'])) {
         <script type="text/javascript" src="https://unpkg.com/tooltip.js"></script>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
-        <script src="http://localhost/idea/jsScripts/wantToBeExuterShowSucces.js"></script>
-        <script src="http://localhost/idea/jsScripts/adminAcceptDeniedIdea.js"></script>
+        <script src="../idea/jsScripts/wantToBeExuterShowSucces.js"></script>
+        <script src="../idea/jsScripts/adminAcceptDeniedIdea.js"></script>
         <link rel="stylesheet" href="assets/css/style.css">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -78,7 +78,7 @@ if (isset($_POST['postId'])) {
         $likes = 0;
         $dislikes = 0;
         $query_count_vote = 'SELECT * FROM inc_idea_vote WHERE inc_idea_vote.idea_id=' . $line['id'];
-        $result_count_vote = pg_query($query_count_vote) or die('Ошибка запроса: ' . pg_last_error());
+        $result_count_vote = pg_query($db, $query_count_vote) or die('Ошибка запроса: ' . pg_last_error());
 
         while ($line_count_vote = pg_fetch_array($result_count_vote, null, PGSQL_ASSOC)) {
 
@@ -135,7 +135,7 @@ if (isset($_POST['postId'])) {
 
 
             $tags_array = array();
-            $result_tag = pg_query('SELECT tag FROM public.inc_idea_tag;');
+            $result_tag = pg_query($db, 'SELECT tag FROM public.inc_idea_tag;');
             while ($line_tag = pg_fetch_assoc($result_tag)) {
                 array_push($tags_array, $line_tag['tag']);
             }

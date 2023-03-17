@@ -9,7 +9,7 @@ $db = new dbFunc();
 $db = $db->dbConn();
 
 
-$isExistAuthor = pg_query("SELECT count(id) FROM public.inc_user WHERE id = " . $_POST['user_id']);
+$isExistAuthor = pg_query($db, "SELECT count(id) FROM public.inc_user WHERE id = " . $_POST['user_id']);
 $isExistAuthor = pg_fetch_assoc($isExistAuthor);
 if ($isExistAuthor['count'] == 0) {
 

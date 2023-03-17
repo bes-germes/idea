@@ -6,8 +6,8 @@
     <script src="http://code.jquery.com/jquery-2.0.2.min.js"></script>
     <script type="text/javascript" src="jquery.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <script src="http://localhost/idea/jsScripts/DBShowAthorIdeas.js"></script>
-    <script src="http://localhost/idea/jsScripts/DBShowIdeaForAdmin.js"></script>
+    <script src="../idea/jsScripts/DBShowAthorIdeas.js"></script>
+    <script src="../idea/jsScripts/DBShowIdeaForAdmin.js"></script>
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -75,7 +75,7 @@
         $likes = 0;
         $dislikes = 0;
         $query_count_vote = 'SELECT * FROM inc_idea_vote WHERE inc_idea_vote.idea_id=' . $line['id'];
-        $result_count_vote = pg_query($query_count_vote) or die('Ошибка запроса: ' . pg_last_error());
+        $result_count_vote = pg_query($db, $query_count_vote) or die('Ошибка запроса: ' . pg_last_error());
 
         while ($line_count_vote = pg_fetch_array($result_count_vote, null, PGSQL_ASSOC)) {
 

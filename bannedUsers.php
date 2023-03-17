@@ -6,7 +6,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <script src="http://code.jquery.com/jquery-2.0.2.min.js"></script>
     <script type="text/javascript" src="jquery.js"></script>
-    <script src="http://localhost/idea/jsScripts/DBBanUser.js"></script>
+    <script src="../idea/jsScripts/DBBanUser.js"></script>
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -56,7 +56,7 @@
 
                         $db = new dbFunc();
                         $db = $db->dbConn();
-                        $result_groups = pg_query('SELECT name, id FROM public."group";');
+                        $result_groups = pg_query($db, 'SELECT name, id FROM public."group";');
                         while ($line_groups = pg_fetch_array($result_groups, null, PGSQL_ASSOC)) {
 
                         ?>
@@ -72,11 +72,11 @@
 
 
 
-                        $banned_users = pg_query('SELECT id FROM public.inc_user WHERE locked = true');
+                        $banned_users = pg_query($db, 'SELECT id FROM public.inc_user WHERE locked = true');
 
                         while ($banned_users_result = pg_fetch_array($banned_users)) {
 
-                            $banned_users_names = pg_query('SELECT id, first_name, middle_name, last_name, login FROM public.students WHERE id = ' . $banned_users_result['id']);
+                            $banned_users_names = pg_query($db, 'SELECT id, first_name, middle_name, last_name, login FROM public.students WHERE id = ' . $banned_users_result['id']);
                             $banned_users_names_result = pg_fetch_array($banned_users_names);
                         ?>
                             <li class="list-group-item"><?= $banned_users_names_result['first_name'] ?> <?= $banned_users_names_result['middle_name'] ?> <?= $banned_users_names_result['last_name'] ?>
