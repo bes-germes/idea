@@ -45,18 +45,32 @@
         <div class="container">
 
             <div class="row justify-content-center">
+
+                <div class="col-auto">
+                    <select class="form-select" aria-label="Default select example" onchange="findExecuterByGroup()">
+                        <option selected>Выберите группу</option>
+                        <?php
+                        session_start();
+
+                        require_once('config/dbFunc.class.php');
+
+                        $db = new dbFunc();
+                        $db = $db->dbConn();
+                        $result_groups = pg_query('SELECT name, id FROM public."group";');
+                        while ($line_groups = pg_fetch_array($result_groups, null, PGSQL_ASSOC)) {
+
+                        ?>
+                            <option id="option_select<?= $line_groups['id'] ?>" value="<?= $line_groups['id'] ?>"><?= $line_groups['name'] ?></option>
+                        <?php } ?>
+                    </select>
+                </div>
                 <div class="col-auto">
 
                     Забаненные пользователи
                     <ul class="list-group">
                         <?php
-                         
-                         session_start();
-                 
-                         require_once('config/dbFunc.class.php');
 
-                         $db = new dbFunc();
-                         $db = $db->dbConn();
+
 
                         $banned_users = pg_query('SELECT id FROM public.inc_user WHERE locked = true');
 
@@ -65,9 +79,9 @@
                             $banned_users_names = pg_query('SELECT id, first_name, middle_name, last_name, login FROM public.students WHERE id = ' . $banned_users_result['id']);
                             $banned_users_names_result = pg_fetch_array($banned_users_names);
                         ?>
-                            <li class="list-group-item"><?=$banned_users_names_result['first_name']?> <?=$banned_users_names_result['middle_name']?> <?=$banned_users_names_result['last_name']?>
-                            <button class="btn btn-primary ml-3" id="buttonBack" type="button" onclick="DBUnbanUser(<?=$banned_users_result['id']?>)">Разбанить</button>
-                        </li>
+                            <li class="list-group-item"><?= $banned_users_names_result['first_name'] ?> <?= $banned_users_names_result['middle_name'] ?> <?= $banned_users_names_result['last_name'] ?>
+                                <button class="btn btn-primary ml-3" id="buttonBack" type="button" onclick="DBUnbanUser(<?= $banned_users_result['id'] ?>)">Разбанить</button>
+                            </li>
 
                         <?php
                         }
