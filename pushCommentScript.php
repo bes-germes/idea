@@ -28,7 +28,5 @@ if ($isExistAuthor['count'] == 0){
 
 $quary = "INSERT into inc_comment(idea_id, comment_id, author_id, description, created, modified)  VALUES(" . $postId . "," . $comId . "," . $_POST['user_id']. ", '" . $descr . "','" . $postTime . "','" . $postTime . "');";
 $res = pg_query($db, (string) $quary);
-$quary = "SELECT MAX(id) from inc_comment";
-$res = pg_query($db, (string) $quary);
 
-echo pg_fetch_assoc($res)['max'];
+echo pg_fetch_assoc($res);
