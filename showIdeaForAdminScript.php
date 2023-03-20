@@ -17,7 +17,7 @@ if (isset($_POST['postId'])) {
 
     <head>
         <meta charset="UTF-8">
-        <script src="http://code.jquery.com/jquery-2.0.2.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
         <script type="text/javascript" src="jquery.js"></script>
         <!-- подключаем библиотеку -->
         <script type="text/javascript" src="https://unpkg.com/popper.js"></script>
