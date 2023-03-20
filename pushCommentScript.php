@@ -26,7 +26,11 @@ if ($isExistAuthor['count'] == 0){
     $newAuthor = pg_query($db, "INSERT INTO public.students(id, first_name, middle_name, last_name, login) VALUES (".$_POST['user_id'].", ".$_POST['first_name'].",".$_POST['middle_name']." ,".$_POST['last_name']." ,".$_POST['login']." )");
 }
 
-$quary = "INSERT into inc_comment(idea_id, comment_id, author_id, description, created, modified)  VALUES(" . $postId . "," . $comId . "," . $_POST['user_id']. ", '" . $descr . "','" . $postTime . "','" . $postTime . "');";
+echo "INSERT INTO public.inc_comment(idea_id, comment_id, author_id, description, created, modified)  VALUES(" . $postId . "," . $comId . "," . $_POST['user_id']. ", '" . $descr . "','" . $postTime . "','" . $postTime . "');";
+
+$quary = "INSERT INTO public.inc_comment(idea_id, comment_id, author_id, description, created, modified)  VALUES(" . $postId . "," . $comId . "," . $_POST['user_id']. ", '" . $descr . "','" . $postTime . "','" . $postTime . "');";
 $res = pg_query($db, (string) $quary);
+
+
 
 echo pg_fetch_assoc($res);
